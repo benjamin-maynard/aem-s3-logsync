@@ -61,11 +61,7 @@ func main() {
 func copytoS3(file string) {
 
 	// Split the File by last comma
-	fileName := strings.Split(file, ",")[1]
-
-	// Remove the Noise
-	fileName = strings.ReplaceAll(fileName, "[", "")
-	fileName = strings.ReplaceAll(fileName, " [/mnt2/s3-cache/upload/da/82/5d/", "")
+	fileName := between(file, "Successfully added [", "], [")
 
 	// Insert Missing "-" into filename from the log
 	fileName = fileName[:4] + "-" + fileName[4:]
@@ -101,10 +97,28 @@ func copytoS3(file string) {
 			return
 		}
 
-		fmt.Println("Successfully copied object " + fileName + ".")
+		fmt.Println("Successfully copied object " + fileName + " from: s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + "/" + fileName + ".")
 
 	} else {
-		fmt.Println("Print Only: Would have copied " + fileName + " from " + sourceBucket + "to" + targetBucket + ".")
+		fmt.Println("Print Only: Would have copied " + fileName + " from: s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + "/" + fileName + ".")
 	}
 
+}
+
+// Between func - credit https://www.dotnetperls.com/between-before-after-go
+func between(value string, a string, b string) string {
+	// Get substring between two strings.
+	posFirst := strings.Index(value, a)
+	if posFirst == -1 {
+		return ""
+	}
+	posLast := strings.Index(value, b)
+	if posLast == -1 {
+		return ""
+	}
+	posFirstAdjusted := posFirst + len(a)
+	if posFirstAdjusted >= posLast {
+		return ""
+	}
+	return value[posFirstAdjusted:posLast]
 }
