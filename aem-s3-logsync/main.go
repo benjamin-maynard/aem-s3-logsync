@@ -67,6 +67,7 @@ func copytoS3(file string) {
 	fileName = fileName[:4] + "-" + fileName[4:]
 
 	if strings.ToLower(printOnly) != "true" {
+
 		// Copy the Object from Source to Target
 		sess := session.Must(session.NewSession())
 
@@ -78,23 +79,26 @@ func copytoS3(file string) {
 			Bucket:     aws.String(targetBucket),
 			CopySource: aws.String((sourceBucket + "/" + fileName)),
 			Key:        aws.String(fileName),
+			ACL:        aws.String("bucket-owner-full-control"),
 		}
 
 		_, err := svc.CopyObject(input)
 		if err != nil {
+
 			if aerr, ok := err.(awserr.Error); ok {
 				switch aerr.Code() {
 				case s3.ErrCodeObjectNotInActiveTierError:
-					fmt.Println(s3.ErrCodeObjectNotInActiveTierError, aerr.Error())
+					fmt.Println(s3.ErrCodeObjectNotInActiveTierError, aerr.Error()+" (Object: "+fileName+")")
 				default:
-					fmt.Println(aerr.Error())
+					fmt.Println(aerr.Error() + " (Object: " + fileName + ")")
 				}
 			} else {
 				// Print the error, cast err to awserr.Error to get the Code and
 				// Message from an error.
-				fmt.Println(err.Error())
+				fmt.Println(err.Error() + " (Object: " + fileName + ")")
 			}
 			return
+
 		}
 
 		fmt.Println("Successfully copied s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + ".")
