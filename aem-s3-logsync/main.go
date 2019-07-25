@@ -20,11 +20,13 @@ var printOnly string
 
 func main() {
 
+	// Convert Environment Variables to Variables
 	sourceBucket = os.Getenv("SOURCE_BUCKET_NAME")
 	targetBucket = os.Getenv("TARGET_BUCKET_NAME")
 	bucketRegion = os.Getenv("BUCKET_REGION")
 	printOnly = os.Getenv("PRINT_ONLY")
 
+	// Excute a Tail  on the locallog, mounted into the container from the underlying host
 	cmd := exec.Command("tail", "-f", "/locallog.log")
 
 	// Create a pipe for the output of the script
@@ -38,7 +40,7 @@ func main() {
 	go func() {
 		for scanner.Scan() {
 
-			// Pass the log line to the copytoS3() function to process
+			// Pass the log line to the copytoS3() function to process, use a goroutine to make non-blocking
 			go copytoS3(scanner.Text())
 
 		}
@@ -66,6 +68,7 @@ func copytoS3(file string) {
 	// Insert Missing "-" into filename from the log
 	fileName = fileName[:4] + "-" + fileName[4:]
 
+	// If we are in print only, do not do S3 Copies, just print actions
 	if strings.ToLower(printOnly) != "true" {
 
 		// Copy the Object from Source to Target
