@@ -97,10 +97,10 @@ func copytoS3(file string) {
 			return
 		}
 
-		fmt.Println("Successfully copied object " + fileName + " from: s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + "/" + fileName + ".")
+		fmt.Println("Successfully copied s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + ".")
 
 	} else {
-		fmt.Println("Print Only: Would have copied " + fileName + " from: s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + "/" + fileName + ".")
+		fmt.Println("Print Only: Would have copied: s3://" + sourceBucket + "/" + fileName + " to s3://" + targetBucket + ".")
 	}
 
 }
