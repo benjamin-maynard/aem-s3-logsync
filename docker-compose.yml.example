@@ -1,0 +1,14 @@
+version: '3'
+services:
+
+   aem-s3-logsync:
+    build: .
+    environment:
+     - AWS_S3_ACCESS_KEY=<KEY>
+     - AWS_S3_SECRET_KEY=<SECRET KEY>
+     - SOURCE_BUCKET_NAME=<SOURCE BUCKET>
+     - TARGET_BUCKET_NAME=<TARGET BUCKET>
+     - BUCKET_REGION=<REGION>
+     - PRINT_ONLY=True
+    volumes:
+      - <AEM S3 LOG PATH>:/locallog.log:ro
