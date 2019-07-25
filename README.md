@@ -1,0 +1,1 @@
+## Adobe AEM S3 Connector Log Sync
